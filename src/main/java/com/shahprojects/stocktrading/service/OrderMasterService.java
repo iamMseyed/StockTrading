@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public interface OrderMasterService {
-    public void createOrderMaster(OrderMasterDTO orderMasterDTO, Long id);
-    public OrderMasterDTO getOrderMasterById(Long id);
-    public List<OrderMasterDTO> getAllOrderMaster();
-    public OrderMasterDTO editOrderById(OrderMasterDTO orderMasterDTO, Long id);
-    public void deleteOrderMaster(Long id);
+    void createOrderMaster(OrderMasterDTO orderMasterDTO, Long id);
+    OrderMasterDTO getOrderMasterById(Long id);
+    List<OrderMasterDTO> getAllOrderMaster();
+    void editOrderById(OrderMasterDTO orderMasterDTO, Long id);
+    void deleteOrderMaster(Long id);
 }

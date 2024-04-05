@@ -4,17 +4,13 @@ import com.shahprojects.stocktrading.entity.OrderMaster;
 import com.shahprojects.stocktrading.entity.TradeDetails;
 import com.shahprojects.stocktrading.exception.ResourceNotFoundException;
 import com.shahprojects.stocktrading.payload.OrderMasterDTO;
-import com.shahprojects.stocktrading.payload.TradeDetailsDTO;
 import com.shahprojects.stocktrading.repository.OrderMasterRepository;
 import com.shahprojects.stocktrading.repository.TradeDetailsRepository;
 import com.shahprojects.stocktrading.service.OrderMasterService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,23 +30,10 @@ public class OrderMasterServiceImplementation implements OrderMasterService {
                 () -> new ResourceNotFoundException("No Trade details found with the id: " + tradeId)
         );
 
-       OrderMaster orderMaster= new OrderMaster();
+        OrderMaster orderMaster=modelMapper.map(orderMasterDTO, OrderMaster.class);
+        orderMaster.setTradeDetails(tradeDetail); //dto has id, entity has object, so modelMaper fails there, we need to manually add here
 
-       orderMaster.setStatus(orderMasterDTO.getStatus());
-       orderMaster.setTradeDetails(tradeDetail);
        orderMasterRepository.save(orderMaster);
-    }
-
-    @Override
-    public OrderMasterDTO editOrderById(OrderMasterDTO orderMasterDTO, Long id) {
-        orderMasterRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("No order details found with the id: " +id)
-        );
-        OrderMaster orderMaster= new OrderMaster();
-        orderMaster.setStatus(orderMasterDTO.getStatus());
-        OrderMaster saved = orderMasterRepository.save(orderMaster);
-
-        return null;
     }
 
     @Override
@@ -78,14 +61,17 @@ public class OrderMasterServiceImplementation implements OrderMasterService {
         OrderMaster orderMaster = orderMasterRepository.findById(order_id).orElseThrow(
                 () -> new ResourceNotFoundException("No order found with the id: " + order_id)
         );
+        return modelMapper.map(orderMaster,OrderMasterDTO.class);
+    }
 
-        OrderMasterDTO orderMasterDTO = new OrderMasterDTO();
-
-        modelMapper.map(orderMasterDTO,orderMaster);
-        OrderMaster savedOrder = orderMasterRepository.save(orderMaster);
-        OrderMasterDTO orderMasterDTO1 = modelMapper.map(savedOrder, OrderMasterDTO.class);
-        return orderMasterDTO1 ;
-
+    @Override
+    public void editOrderById(OrderMasterDTO orderMasterDTO, Long id) {
+        OrderMaster orderMaster = orderMasterRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No order details found with the id: " + id)
+        );
+        if(orderMasterDTO.getStatus()!=null)
+            orderMaster.setStatus(orderMasterDTO.getStatus());
+        orderMasterRepository.save(orderMaster);
     }
     @Override
     public void deleteOrderMaster(Long order_id){
