@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orderDetails/")
+@RequestMapping("/order-details/")
 public class OrderMasterController {
 
     private final OrderMasterService orderMasterService;
@@ -18,13 +18,13 @@ public class OrderMasterController {
         this.orderMasterService = orderMasterService;
     }
 
-    @PostMapping("addOrder")
+    @PostMapping("add-order")
     public ResponseEntity<String> addOrderMaster(@RequestBody OrderMasterDTO orderMasterDTO, @RequestParam Long tradeId){
            orderMasterService.createOrderMaster(orderMasterDTO, tradeId);
            return new ResponseEntity<>("Order added successfully!", HttpStatus.CREATED);
     }
 
-    @GetMapping("getOrder")
+    @GetMapping("get-order")
     public ResponseEntity<?> getAllOrderMaster(){
         List<OrderMasterDTO> allOrderMasterDTO = orderMasterService.getAllOrderMaster();
         if(!allOrderMasterDTO.isEmpty())
@@ -33,17 +33,17 @@ public class OrderMasterController {
             return new ResponseEntity<>("No Order Master stored yet!", HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("getOrderById/{id}")
+    @GetMapping("get-order-by-id/{id}")
     public ResponseEntity<OrderMasterDTO> getOrderMasteryById(@PathVariable Long id){
         OrderMasterDTO orderMasterById = orderMasterService.getOrderMasterById(id);
         return new ResponseEntity<>(orderMasterById, HttpStatus.OK);
     }
-    @PutMapping("editOrderById/{id}")
+    @PutMapping("edit-order-by-id/{id}")
     public ResponseEntity<String> editTradeById(@RequestBody OrderMasterDTO orderMasterDTO, @PathVariable Long id){
         orderMasterService.editOrderById(orderMasterDTO, id);
         return new ResponseEntity<>("Order status updated successfully!", HttpStatus.ACCEPTED);
     }
-    @DeleteMapping("deleteOrderById/{id}")
+    @DeleteMapping("delete-order-by-id/{id}")
     public ResponseEntity<String> deleteById(@PathVariable Long id){
         orderMasterService.deleteOrderMaster(id);
         return new ResponseEntity<>("Order deleted successfully with order id: "+id,HttpStatus.OK);
